@@ -1,0 +1,14 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="MySuite" verbose="1">
+    <test name="MyTest">
+        <groups>
+            <run>
+                <include name="GP1"/>
+                <include name="GN1"></include>
+            </run>
+        </groups>
+        <classes>
+            <class name="sample5.ChildTest"></class>
+        </classes>
+    </test>
+</suite>

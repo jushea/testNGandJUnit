@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="MySuite" verbose="1">
+    <test name="MyTest" >
+        <classes>
+            <class name="ex6.ParameterezedTest"></class>
+        </classes>
+
+    </test>
+</suite>
