@@ -1,6 +1,6 @@
 package ex6;
 
-import ex3.DataProviders;
+import ex3_4_5.DataProviders;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,9 +1,8 @@
-package ex3;
+package ex3_4_5;
 
 import org.testng.annotations.*;
 
 import java.io.File;
-import java.io.IOException;
 
 
 public class BaseTest {

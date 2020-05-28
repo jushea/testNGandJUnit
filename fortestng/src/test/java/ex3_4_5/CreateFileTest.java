@@ -1,9 +1,6 @@
-package ex3;
+package ex3_4_5;
 
-import org.testng.Assert;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.testng.asserts.Assertion;
 
 import java.io.*;
 

@@ -11,7 +11,7 @@
             </dependencies>
         </groups>
         <classes>
-            <class name="ex3.CreateFileTest"></class>
+            <class name="ex3_4_5.CreateFileTest"></class>
         </classes>
 
     </test>

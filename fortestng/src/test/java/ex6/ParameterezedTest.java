@@ -1,6 +1,6 @@
 package ex6;
 
-import ex3.DataProviders;
+import ex3_4_5.DataProviders;
 import org.testng.annotations.Test;
 
 import java.io.File;
