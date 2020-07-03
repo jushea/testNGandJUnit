@@ -1,95 +1,31 @@
 package ru.experiment.rest;
 
-import com.github.fge.jsonschema.SchemaVersion;
-import com.github.fge.jsonschema.cfg.ValidationConfiguration;
-import com.github.fge.jsonschema.main.JsonSchemaFactory;
-import com.github.viclovsky.swagger.coverage.SwaggerCoverageRestAssured;
 import com.google.gson.Gson;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-import io.restassured.path.json.JsonPath;
-import io.restassured.response.Response;
-import io.restassured.response.ValidatableResponse;
-import io.restassured.specification.RequestSpecification;
 import org.apache.http.HttpStatus;
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-import ru.experiment.rest.model.Category;
-import ru.experiment.rest.model.Pet;
-import ru.experiment.rest.model.Tag;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import static io.restassured.RestAssured.given;
+import io.restassured.response.ValidatableResponse;
 import static io.restassured.module.jsv.JsonSchemaValidator.*;
 
+import com.github.fge.jsonschema.SchemaVersion;
+import com.github.fge.jsonschema.main.JsonSchemaFactory;
+import com.github.fge.jsonschema.cfg.ValidationConfiguration;
+
+import org.testng.annotations.Test;
+import org.testng.annotations.DataProvider;
+
+import ru.experiment.rest.model.Pet;
+import ru.experiment.rest.model.Tag;
+import ru.experiment.rest.model.Category;
+
+import java.util.ArrayList;
+
 public class PetApi extends TestBase{
-    static final String PET = "/pet/findByStatus";
+    static final String FIND_BY_STATUS = "/pet/findByStatus";
     //https://github.com/rest-assured/rest-assured/issues/1186 Ошибка. после версии restassured 4.0.0
     // matchesJsonSchema(param). param не может быть путем до файла со схемой ответа. param это строка-схема json.
-    static final String PETSCHEMAJSON = "{\n" +
-            "  \"$schema\": \"http://json-schema.org/draft-04/schema\",\n" +
-            "  \"title\": \"Pet\",\n" +
-            "  \"description\": \"Array of pets by status\",\n" +
-            "  \"type\": \"array\",\n" +
-            "  \"properties\": {\n" +
-            "    \"id\": {\n" +
-            "      \"description\": \"The unique identifier for a PET\",\n" +
-            "      \"type\": \"integer\"\n" +
-            "    },\n" +
-            "    \"name\": {\n" +
-            "      \"description\": \"Name of the PET\",\n" +
-            "      \"type\": \"string\"\n" +
-            "    },\n" +
-            "    \"category\": {\n" +
-            "      \"category\": \"http://jsonschema.net/category#\",\n" +
-            "      \"type\": \"object\",\n" +
-            "      \"properties\": {\n" +
-            "        \"id\": {\n" +
-            "          \"id\": \"http://jsonschema.net/category/id#\",\n" +
-            "          \"type\": \"integer\"\n" +
-            "        },\n" +
-            "        \"name\": {\n" +
-            "          \"name\": \"http://jsonschema.net/category/name#\",\n" +
-            "          \"type\": \"string\"\n" +
-            "        }\n" +
-            "      }\n" +
-            "    },\n" +
-            "    \"photoUrls\": {\n" +
-            "      \"type\": \"array\",\n" +
-            "      \"items\": {\"type\": \"string\"}\n" +
-            "    },\n" +
-            "    \"tags\": {\n" +
-            "      \"id\": \"http://jsonschema.net/tags#\",\n" +
-            "      \"type\": \"array\",\n" +
-            "      \"items\": [\n" +
-            "        {\n" +
-            "          \"id\": \"http://jsonschema.net/tags/0#\",\n" +
-            "          \"type\": \"object\",\n" +
-            "          \"properties\": {\n" +
-            "            \"id\": {\n" +
-            "              \"id\": \"http://jsonschema.net/tags/0/id#\",\n" +
-            "              \"type\": \"integer\"\n" +
-            "            },\n" +
-            "            \"name\": {\n" +
-            "              \"id\": \"http://jsonschema.net/tags/0/name#\",\n" +
-            "              \"type\": \"string\"\n" +
-            "            }\n" +
-            "          }\n" +
-            "        }\n" +
-            "      ]\n" +
-            "    },\n" +
-            "    \"status\": {\n" +
-            "      \"type\": \"string\"\n" +
-            "    }\n" +
-            "  }\n" +
-            "}";
-
-
 
     @Test(dataProvider = "parameters")
     public void getFindByStatusTest(String parameter) {
@@ -103,15 +39,14 @@ public class PetApi extends TestBase{
                 .accept(ContentType.JSON)
                 .param("status", parameter)
                 .when()
-                .get(PET)
+                .get(FIND_BY_STATUS)
                 .then()
+                .spec(responseSpec)
                 .assertThat()
-                .body(matchesJsonSchema(PETSCHEMAJSON)
+                .body(matchesJsonSchema(SchemaJson.PETSCHEMAJSON)
                         .using(jsonSchemaFactory))
                 .extract()
                 .response().body().path("[0].status").equals(parameter);
-
-
     }
 
     @DataProvider(name="parameters")
@@ -124,9 +59,9 @@ public class PetApi extends TestBase{
         ValidatableResponse response = given(request)
                 .accept(ContentType.JSON)
                 .when()
-                .get(PET)
+                .get(FIND_BY_STATUS)
                 .then()
-                .statusCode(HttpStatus.SC_OK);
+                .spec(responseSpec);
         System.out.println(response.extract().jsonPath().getString("$"));
     }
 
@@ -136,9 +71,9 @@ public class PetApi extends TestBase{
                 .accept(ContentType.JSON)
                 .param("status","[]")
                 .when()
-                .get(PET)
+                .get(FIND_BY_STATUS)
                 .then()
-                .statusCode(HttpStatus.SC_OK);
+                .spec(responseSpec);
     }
 
     @Test(enabled = true)
@@ -156,10 +91,9 @@ public class PetApi extends TestBase{
         response
                 .then()
                 .assertThat()
-                .statusCode(200);
+                .spec(responseSpec);
 
         System.out.println(response.then().assertThat().statusCode(200).extract().jsonPath().getString("$"));
-
     }
 
     @Test
@@ -189,7 +123,7 @@ public class PetApi extends TestBase{
                 .body(gson.toJson(updatepet))
                 .when()
                 .put("/pet").andReturn();
-        response.then().assertThat().statusCode(HttpStatus.SC_OK);
+        response.then().spec(responseSpec);
     }
 
     @Test
@@ -208,7 +142,7 @@ public class PetApi extends TestBase{
                 .when()
                 .delete("/pet/486395824")
                 .then()
-                .statusCode(HttpStatus.SC_OK);
+                .spec(responseSpec);
     }
 
     public String postPet(int id,
